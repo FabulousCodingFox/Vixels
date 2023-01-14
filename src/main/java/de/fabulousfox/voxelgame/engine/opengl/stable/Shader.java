@@ -25,7 +25,8 @@ public class Shader {
         int vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, vertexCode);
         glCompileShader(vertexShader);
-        if(glGetShaderi(vertexShader, GL_COMPILE_STATUS) == GL_FALSE) throw new RuntimeException("Vertex shader failed to compile: "+vertexPath);
+        if(glGetShaderi(vertexShader, GL_COMPILE_STATUS) == GL_FALSE) throw new RuntimeException("Vertex shader failed to compile: "+vertexPath + " Reason: " +  glGetShaderInfoLog(vertexShader));
+
 
         int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, fragmentCode);

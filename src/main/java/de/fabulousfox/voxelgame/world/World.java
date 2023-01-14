@@ -37,13 +37,16 @@ public class World {
 
     public ArrayList<Chunk> getRenderableAndUpdateChunks(){
         ArrayList<Chunk> chunkToRender = new ArrayList<>(chunksToRender);
-        for(Chunk chunk : chunkToRender) {chunk.generateVBO();}
+        for(Chunk chunk : chunkToRender) {
+            chunk.generateVBO_blocks();
+            chunk.generateVBO_water();
+        }
         chunksToRender.removeIf(chunkToRender::contains);
         ArrayList<Chunk> chunkToDestroy = new ArrayList<>(chunksToDestroy);
         for(Chunk chunk : chunkToDestroy) {chunk.destroy();}
         chunksToDestroy.removeIf(chunkToDestroy::contains);
 
-        return new ArrayList<>(chunks).stream().filter(Chunk::isReady).collect(Collectors.toCollection(ArrayList::new));
+        return new ArrayList<>(chunks).stream().filter(Chunk::isVBOGenerated).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Chunk getChunkAt(int x, int z){
@@ -74,7 +77,7 @@ public class World {
         ArrayList<Chunk> chunksToGenerate = new ArrayList<>();
 
         for(Chunk chunk : chunks) {
-            if(chunk.getMesh() != null) continue;
+            if(chunk.getMesh_blocks() != null) continue;
 
             int sides = 0;
             for(Chunk search : chunks) {

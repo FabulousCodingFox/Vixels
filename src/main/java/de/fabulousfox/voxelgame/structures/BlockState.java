@@ -36,15 +36,28 @@ public class BlockState {
 
         if(block == BlockType.GRASS){
             if(side == BlockSide.UP) pos = new int[]{0, 0};
+            else if(side == BlockSide.DOWN) pos = new int[]{0, 2};
             else pos = new int[]{0, 1};
         }
 
         if(block == BlockType.SAND){
-            pos = new int[]{1, 0};
+            pos = new int[]{1, 1};
         }
 
         if(block == BlockType.WATER){
-            pos = new int[]{1, 1};
+            pos = new int[]{3, 0};
+        }
+
+        if(block == BlockType.DIRT){
+            pos = new int[]{0, 2};
+        }
+
+        if(block == BlockType.COBBLESTONE){
+            pos = new int[]{2, 0};
+        }
+
+        if(block == BlockType.STONE){
+            pos = new int[]{1, 0};
         }
 
         return pos;
