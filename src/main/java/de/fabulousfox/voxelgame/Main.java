@@ -6,6 +6,8 @@ public class Main {
     public static void main(String[] args) {
         try {
             new Client();
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,7 @@
-package de.fabulousfox.voxelgame.structures;
+package de.fabulousfox.voxelgame.world;
 
-import de.fabulousfox.voxelgame.engine.terrain.TerrainGenerator;
+import de.fabulousfox.voxelgame.structures.BlockSide;
+import de.fabulousfox.voxelgame.structures.BlockState;
 import de.fabulousfox.voxelgame.structures.biomes.Biome;
 
 import java.util.ArrayList;
@@ -53,9 +54,9 @@ public class Chunk {
     public int getZ() {
         return z;
     }
-    public void generateTerrain() {
+    public void generateTerrain(int seed) {
         isTerrainGenerated = true;
-        TerrainGenerator.generateChunk(this);
+        TerrainGenerator.generateChunk(this, seed);
     }
     private static BlockState getBlockAt(int x, int y, int z, Chunk chunk, Chunk c0, Chunk c1, Chunk c2, Chunk c3, Chunk c4, Chunk c5, Chunk c6, Chunk c7) {
         //  x

@@ -1,6 +1,6 @@
 package de.fabulousfox.voxelgame.libs;
 
-import de.fabulousfox.voxelgame.structures.Chunk;
+import de.fabulousfox.voxelgame.world.Chunk;
 
 public class Location {
     public double x;

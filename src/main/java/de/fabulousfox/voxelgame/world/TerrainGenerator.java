@@ -1,7 +1,6 @@
-package de.fabulousfox.voxelgame.engine.terrain;
+package de.fabulousfox.voxelgame.world;
 
 import de.fabulousfox.voxelgame.libs.FastNoiseLite;
-import de.fabulousfox.voxelgame.structures.Chunk;
 import de.fabulousfox.voxelgame.structures.biomes.Biome;
 
 import java.util.*;
@@ -13,17 +12,11 @@ public class TerrainGenerator {
     private static FastNoiseLite b;
     private static FastNoiseLite c;
 
-    private static int seed;
-
-    public static void init(ArrayList<Biome> biomes, int seed) {
+    public static void init(ArrayList<Biome> biomes) {
         TerrainGenerator.biomes = biomes;
-        TerrainGenerator.seed = seed;
         a = new FastNoiseLite();
         b = new FastNoiseLite();
         c = new FastNoiseLite();
-        a.SetSeed(seed);
-        b.SetSeed(seed);
-        c.SetSeed(seed);
 
         a.SetFrequency(0.01f);
         b.SetFrequency(0.005f);
@@ -36,42 +29,31 @@ public class TerrainGenerator {
         );
     }
 
-    public static void generateChunk(Chunk chunk) {
-        //float value =((a.GetNoise(chunk.getX(), chunk.getY()) + 1) / 2) * biomes.size();
-        //chunk.setBiome(biomes.get((int) value));
+    public static void generateChunk(Chunk chunk, int seed) {
+        a.SetSeed(seed);
+        b.SetSeed(seed);
+        c.SetSeed(seed);
 
         chunk.setBiome(getBiomeAtXY(chunk.getX(), chunk.getZ()));
         Biome front = getBiomeAtXY(chunk.getX(), chunk.getZ() + 1);
         Biome back = getBiomeAtXY(chunk.getX(), chunk.getZ() - 1);
         Biome left = getBiomeAtXY(chunk.getX() - 1, chunk.getZ());
         Biome right = getBiomeAtXY(chunk.getX() + 1, chunk.getZ());
-
-        // Normal generation
-        if (true) { // chunk.getBiome() == front && chunk.getBiome() == back && chunk.getBiome() == left && chunk.getBiome() == right
-            for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-                for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-                    for (int y = 0; y < Chunk.CHUNK_HEIGHT; y++) {
-                        chunk.setBlock(x, y, z, chunk.getBiome().getBlock(chunk.getBiome().getHeight(seed, x + chunk.getX() * Chunk.CHUNK_SIZE, z + chunk.getZ() * Chunk.CHUNK_SIZE), y));
-                    }
+        for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
+            for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
+                for (int y = 0; y < Chunk.CHUNK_HEIGHT; y++) {
+                    chunk.setBlock(x, y, z, chunk.getBiome().getBlock(chunk.getBiome().getHeight(seed, x + chunk.getX() * Chunk.CHUNK_SIZE, z + chunk.getZ() * Chunk.CHUNK_SIZE), y));
                 }
             }
-            return;
         }
+        return;
 
-
-        float[][] heightmap = new float[Chunk.CHUNK_SIZE][Chunk.CHUNK_SIZE];
+        /*float[][] heightmap = new float[Chunk.CHUNK_SIZE][Chunk.CHUNK_SIZE];
 
         float[][] hmFront = new float[Chunk.CHUNK_SIZE][Chunk.CHUNK_SIZE];
         float[][] hmLeft = new float[Chunk.CHUNK_SIZE][Chunk.CHUNK_SIZE];
 
-
-
-
-
-
-
-
-        /*// Front and Back
+        // Front and Back
         for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
             for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
                 float diff = Math.abs(

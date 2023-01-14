@@ -1,7 +1,7 @@
 package de.fabulousfox.voxelgame.engine.opengl.stable;
 
 import de.fabulousfox.voxelgame.client.Key;
-import de.fabulousfox.voxelgame.structures.Chunk;
+import de.fabulousfox.voxelgame.world.Chunk;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

@@ -4,7 +4,7 @@ import de.fabulousfox.voxelgame.client.Client;
 import de.fabulousfox.voxelgame.client.Key;
 import de.fabulousfox.voxelgame.engine.AssetLoader;
 import de.fabulousfox.voxelgame.libs.Log;
-import de.fabulousfox.voxelgame.structures.Chunk;
+import de.fabulousfox.voxelgame.world.Chunk;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
