@@ -34,7 +34,7 @@ public class Client {
         this.chunksToRender = new ArrayList<>();
         this.chunksToDestroy = new ArrayList<>();
 
-        this.renderDistance = 2;
+        this.renderDistance = 8;
         this.seed = new Random().nextInt(Integer.MAX_VALUE);
 
         this.engine = new OpenGlRenderer(

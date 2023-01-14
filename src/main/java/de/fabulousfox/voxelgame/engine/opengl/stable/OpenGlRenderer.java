@@ -170,13 +170,13 @@ public class OpenGlRenderer {
         glBindVertexArray(CHUNK_VAO);
         for(Chunk chunk : chunks) {
             glBindBuffer(GL_ARRAY_BUFFER, chunk.getVBO());
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 24, 0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
             glEnableVertexAttribArray(0); // Position
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 24, 12);
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
             glEnableVertexAttribArray(1); // Tex
-            glVertexAttribPointer(2, 1, GL_FLOAT, false, 24, 20);
-            glEnableVertexAttribArray(2); // AO
-            glDrawArrays(GL_TRIANGLES, 0, chunk.getMesh().length/6);
+            //glVertexAttribPointer(2, 1, GL_FLOAT, false, 24, 20);
+            //glEnableVertexAttribArray(2); // AO
+            glDrawArrays(GL_TRIANGLES, 0, chunk.getMesh().length/5);
         }
 
         // Draw the Skybox

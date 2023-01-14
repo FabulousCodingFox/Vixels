@@ -107,10 +107,11 @@ public class Chunk {
         throw new IllegalStateException("Should not be here");
     }
     private static float getAOVal(boolean side1, boolean side2, boolean corner) {
-        return switch ((side1?1:0) + (side2?1:0)  + (corner?1:0)) {
-            case 3 -> 0.25f;
-            case 2 -> 0.5f;
-            case 1 -> 0.75f;
+        int amount = (side1?1:0) + (side2?1:0)  + (corner?1:0);
+        return switch (amount) {
+            case 3 -> 0.6f;
+            case 2 -> 0.8f;
+            case 1 -> 0.9f;
             default -> 1f;
         };
     }
@@ -131,64 +132,92 @@ public class Chunk {
                         int xp = x + this.getX() * Chunk.CHUNK_SIZE;
                         int zp = z + this.getY() * Chunk.CHUNK_SIZE;
 
-                        float AO_MMM = (getAOVal(
-                                !getBlockAt(x, y, z-1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x-1, y, z, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x-1, y, z-1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent()));
-                        float AO_MMP = (getAOVal(
-                                !getBlockAt(x, y, z+1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x-1, y, z, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x-1, y, z+1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent()));
-                        float AO_MPM = (getAOVal(
-                                !getBlockAt(x, y+1, z-1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x-1, y+1, z, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x-1, y+1, z-1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent()));
-                        float AO_MPP = (getAOVal(
-                                !getBlockAt(x, y+1, z+1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x-1, y+1, z, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x-1, y+1, z+1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent()));
-                        float AO_PMM = (getAOVal(
-                                !getBlockAt(x, y, z-1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x+1, y, z, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x+1, y, z-1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent()));
-                        float AO_PMP = (getAOVal(
-                                !getBlockAt(x, y, z+1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x+1, y, z, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x+1, y, z+1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent()));
-                        float AO_PPM = (getAOVal(
-                                !getBlockAt(x, y+1, z-1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x+1, y+1, z, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x+1, y+1, z-1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent()));
-                        float AO_PPP = (getAOVal(
-                                !getBlockAt(x, y+1, z+1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x+1, y+1, z, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent(),
-                                !getBlockAt(x+1, y+1, z+1, this,c0,c1,c2,c3,c4,c5,c6,c7).getTransparent()));
-
-
                         BlockState up = getBlockAt(x, y + 1, z, this,c0,c1,c2,c3,c4,c5,c6,c7);
                         if (up.getTransparent() && up.getBlockType() != block.getBlockType()) {
                             float texX = block.getTexPositions(BlockSide.UP)[0] / atlasWidth;
                             float texY = block.getTexPositions(BlockSide.UP)[1] / atlasHeight;
                             float texX2 = texX + texWidth;
                             float texY2 = texY + texHeight;
-                            if(AO_MPM + AO_PPP < AO_PPM + AO_MPP) {
-                                data.addAll(List.of(
-                                        -0.5f + xp, 0.5f + y,  0.5f + zp, texX,  texY2, AO_MPP,
-                                        -0.5f + xp, 0.5f + y, -0.5f + zp, texX,  texY,  AO_MPM,
-                                         0.5f + xp, 0.5f + y, -0.5f + zp, texX2, texY,  AO_PPM,
-                                         0.5f + xp, 0.5f + y, -0.5f + zp, texX2, texY,  AO_PPM,
-                                         0.5f + xp, 0.5f + y,  0.5f + zp, texX2, texY2, AO_PPP,
-                                        -0.5f + xp, 0.5f + y,  0.5f + zp, texX,  texY2, AO_MPP));
-                            } else {
-                                data.addAll(List.of(
-                                        -0.5f + xp, 0.5f + y, -0.5f + zp, texX,  texY2, AO_MPM,
-                                         0.5f + xp, 0.5f + y, -0.5f + zp, texX,  texY,  AO_PPM,
-                                         0.5f + xp, 0.5f + y,  0.5f + zp, texX2, texY,  AO_PPP,
-                                         0.5f + xp, 0.5f + y,  0.5f + zp, texX2, texY,  AO_PPP,
-                                        -0.5f + xp, 0.5f + y,  0.5f + zp, texX2, texY2, AO_MPP,
-                                        -0.5f + xp, 0.5f + y, -0.5f + zp, texX,  texY2, AO_MPM));
-                            }
+                            data.addAll(List.of(
+                                -0.5f + xp, 0.5f + y,  0.5f + zp, texX,  texY2,
+                                -0.5f + xp, 0.5f + y, -0.5f + zp, texX,  texY,
+                                 0.5f + xp, 0.5f + y, -0.5f + zp, texX2, texY,
+
+                                 0.5f + xp, 0.5f + y, -0.5f + zp, texX2, texY,
+                                 0.5f + xp, 0.5f + y,  0.5f + zp, texX2, texY2,
+                                -0.5f + xp, 0.5f + y,  0.5f + zp, texX,  texY2
+                            ));
                         }
+
+                        BlockState left = getBlockAt(x - 1, y, z, this,c0,c1,c2,c3,c4,c5,c6,c7);
+                        if (left.getTransparent() && left.getBlockType() != block.getBlockType()) {
+                            float texX = block.getTexPositions(BlockSide.EAST)[0] / atlasWidth;
+                            float texY = block.getTexPositions(BlockSide.EAST)[1] / atlasHeight;
+                            float texX2 = texX + texWidth;
+                            float texY2 = texY + texHeight;
+                            data.addAll(List.of(
+                                -0.5f + xp, -0.5f + y,  0.5f + zp, texX2, texY2,
+                                -0.5f + xp,  0.5f + y, -0.5f + zp, texX,  texY,
+                                -0.5f + xp,  0.5f + y,  0.5f + zp, texX2, texY,
+                                -0.5f + xp,  0.5f + y, -0.5f + zp, texX,  texY,
+                                -0.5f + xp, -0.5f + y,  0.5f + zp, texX2, texY2,
+                                -0.5f + xp, -0.5f + y, -0.5f + zp, texX,  texY2
+                            ));
+
+                        }
+
+                        BlockState right = getBlockAt(x + 1, y, z, this,c0,c1,c2,c3,c4,c5,c6,c7);
+                        if (right.getTransparent() && right.getBlockType() != block.getBlockType()) {
+                            float texX = block.getTexPositions(BlockSide.WEST)[0] / atlasWidth;
+                            float texY = block.getTexPositions(BlockSide.WEST)[1] / atlasHeight;
+                            float texX2 = texX + texWidth;
+                            float texY2 = texY + texHeight;
+                            data.addAll(List.of(
+                                0.5f + xp,  0.5f + y,  0.5f + zp, texX,  texY,
+                                0.5f + xp,  0.5f + y, -0.5f + zp, texX2, texY,
+                                0.5f + xp, -0.5f + y, -0.5f + zp, texX2, texY2,
+
+                                0.5f + xp, -0.5f + y, -0.5f + zp, texX2, texY2,
+                                0.5f + xp, -0.5f + y,  0.5f + zp, texX,  texY2,
+                                0.5f + xp,  0.5f + y,  0.5f + zp, texX,  texY
+                            ));
+                        }
+
+                        BlockState front = getBlockAt(x, y, z + 1, this,c0,c1,c2,c3,c4,c5,c6,c7);
+                        if (front.getTransparent() && front.getBlockType() != block.getBlockType()) {
+                            float texX = block.getTexPositions(BlockSide.NORTH)[0] / atlasWidth;
+                            float texY = block.getTexPositions(BlockSide.NORTH)[1] / atlasHeight;
+                            float texX2 = texX + texWidth;
+                            float texY2 = texY + texHeight;
+                            data.addAll(List.of(
+                                    -0.5f + xp, -0.5f + y, 0.5f + zp, texX,  texY2,
+                                     0.5f + xp,  0.5f + y, 0.5f + zp, texX2, texY,
+                                     0.5f + xp, -0.5f + y, 0.5f + zp, texX2, texY2,
+
+                                     0.5f + xp,  0.5f + y, 0.5f + zp, texX2, texY,
+                                    -0.5f + xp, -0.5f + y, 0.5f + zp, texX,  texY2,
+                                    -0.5f + xp,  0.5f + y, 0.5f + zp, texX,  texY
+                            ));
+                        }
+
+                        BlockState back = getBlockAt(x, y, z - 1, this,c0,c1,c2,c3,c4,c5,c6,c7);
+                        if (back.getTransparent() && back.getBlockType() != block.getBlockType()) {
+                            float texX = block.getTexPositions(BlockSide.SOUTH)[0] / atlasWidth;
+                            float texY = block.getTexPositions(BlockSide.SOUTH)[1] / atlasHeight;
+                            float texX2 = texX + texWidth;
+                            float texY2 = texY + texHeight;
+                            data.addAll(List.of(
+                                    -0.5f + xp, -0.5f + y, -0.5f + zp, texX2, texY2,
+                                     0.5f + xp, -0.5f + y, -0.5f + zp, texX,  texY2,
+                                     0.5f + xp,  0.5f + y, -0.5f + zp, texX,  texY,
+
+                                     0.5f + xp,  0.5f + y, -0.5f + zp, texX,  texY,
+                                    -0.5f + xp,  0.5f + y, -0.5f + zp, texX2, texY,
+                                    -0.5f + xp, -0.5f + y, -0.5f + zp, texX2, texY2
+                            ));
+                        }
+
+
 
                         /*BlockState down = getBlockAt(x, y - 1, z, this,c0,c1,c2,c3,c4,c5,c6,c7);
                         if (down.getTransparent() && down.getBlockType() != block.getBlockType()) {
