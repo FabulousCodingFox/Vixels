@@ -16,18 +16,18 @@ public class Chunk {
     private final BlockState[][][] blocks;
     private float[] mesh;
     private final int x;
-    private final int y;
+    private final int z;
     private int VBO;
     private boolean ready;
-    private Chunk[] neighbors;
+    private boolean isTerrainGenerated;
     private Biome biome;
 
-    public Chunk(int x, int y) {
+    public Chunk(int x, int z) {
         this.blocks = new BlockState[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
         this.x = x;
-        this.y = y;
+        this.z = z;
         this.ready = false;
-        this.neighbors = new Chunk[4];
+        this.isTerrainGenerated = false;
     }
     public Biome getBiome() {
         return biome;
@@ -50,10 +50,11 @@ public class Chunk {
     public int getX() {
         return x;
     }
-    public int getY() {
-        return y;
+    public int getZ() {
+        return z;
     }
     public void generateTerrain() {
+        isTerrainGenerated = true;
         TerrainGenerator.generateChunk(this);
     }
     private static BlockState getBlockAt(int x, int y, int z, Chunk chunk, Chunk c0, Chunk c1, Chunk c2, Chunk c3, Chunk c4, Chunk c5, Chunk c6, Chunk c7) {
@@ -130,7 +131,7 @@ public class Chunk {
                     BlockState block = this.getBlock(x, y, z);
                     if (block.getBlockType() != BlockState.AIR) {
                         int xp = x + this.getX() * Chunk.CHUNK_SIZE;
-                        int zp = z + this.getY() * Chunk.CHUNK_SIZE;
+                        int zp = z + this.getZ() * Chunk.CHUNK_SIZE;
 
                         BlockState up = getBlockAt(x, y + 1, z, this,c0,c1,c2,c3,c4,c5,c6,c7);
                         if (up.getTransparent() && up.getBlockType() != block.getBlockType()) {
@@ -216,95 +217,6 @@ public class Chunk {
                                     -0.5f + xp, -0.5f + y, -0.5f + zp, texX2, texY2
                             ));
                         }
-
-
-
-                        /*BlockState down = getBlockAt(x, y - 1, z, this,c0,c1,c2,c3,c4,c5,c6,c7);
-                        if (down.getTransparent() && down.getBlockType() != block.getBlockType()) {
-                            if(AO_MMM + AO_PMP < AO_PMM + AO_MMP) {
-                                data.addAll(List.of(
-                                        -0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_MMP, colorG * AO_MMP, colorB * AO_MMP,
-                                        0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_PMM, colorG * AO_PMM, colorB * AO_PMM,
-                                        -0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_MMM, colorG * AO_MMM, colorB * AO_MMM,
-                                        0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_PMM, colorG * AO_PMM, colorB * AO_PMM,
-                                        -0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_MMP, colorG * AO_MMP, colorB * AO_MMP,
-                                        0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_PMP, colorG * AO_PMP, colorB * AO_PMP));
-                            } else {
-                                data.addAll(List.of(
-                                        -0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_MMM, colorG * AO_MMM, colorB * AO_MMM,
-                                        0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_PMP, colorG * AO_PMP, colorB * AO_PMP,
-                                        0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_PMM, colorG * AO_PMM, colorB * AO_PMM,
-                                        0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_PMP, colorG * AO_PMP, colorB * AO_PMP,
-                                        -0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_MMM, colorG * AO_MMM, colorB * AO_MMM,
-                                        -0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_MMP, colorG * AO_MMP, colorB * AO_MMP));
-                            }
-                        }
-
-                        BlockState left = getBlockAt(x - 1, y, z, this,c0,c1,c2,c3,c4,c5,c6,c7);
-                        if (left.getTransparent() && left.getBlockType() != block.getBlockType()) {
-                            if(AO_MPP + AO_MPM > AO_MMM + AO_MMP) {
-                                data.addAll(List.of(
-                                        -0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_MMP, colorG * AO_MMP, colorB * AO_MMP,
-                                        -0.5f + xp, 0.5f + y, -0.5f + zp, colorR * AO_MPM, colorG * AO_MPM, colorB * AO_MPM,
-                                        -0.5f + xp, 0.5f + y, 0.5f + zp, colorR * AO_MPP, colorG * AO_MPP, colorB * AO_MPP,
-                                        -0.5f + xp, 0.5f + y, -0.5f + zp, colorR * AO_MPM, colorG * AO_MPM, colorB * AO_MPM,
-                                        -0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_MMP, colorG * AO_MMP, colorB * AO_MMP,
-                                        -0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_MMM, colorG * AO_MMM, colorB * AO_MMM));
-                            } else {
-                                data.addAll(List.of(
-                                        -0.5f + xp, 0.5f + y, 0.5f + zp, colorR * AO_MPP, colorG * AO_MPP, colorB * AO_MPP,
-                                        -0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_MMM, colorG * AO_MMM, colorB * AO_MMM,
-                                        -0.5f + xp, 0.5f + y, -0.5f + zp, colorR * AO_MPM, colorG * AO_MPM, colorB * AO_MPM,
-                                        -0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_MMM, colorG * AO_MMM, colorB * AO_MMM,
-                                        -0.5f + xp, 0.5f + y, 0.5f + zp, colorR * AO_MPP, colorG * AO_MPP, colorB * AO_MPP,
-                                        -0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_MMP, colorG * AO_MMP, colorB * AO_MMP));
-                            }
-                        }
-
-                        BlockState right = getBlockAt(x + 1, y, z, this,c0,c1,c2,c3,c4,c5,c6,c7);
-                        if (right.getTransparent() && right.getBlockType() != block.getBlockType()) {
-                            if(false) {
-                                data.addAll(List.of(
-                                        -0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_PMP, colorG * AO_PMP, colorB * AO_PMP,
-                                        -0.5f + xp, 0.5f + y, -0.5f + zp, colorR * AO_PPM, colorG * AO_PPM, colorB * AO_PPM,
-                                        -0.5f + xp, 0.5f + y, 0.5f + zp, colorR * AO_PPP, colorG * AO_PPP, colorB * AO_PPP,
-                                        -0.5f + xp, 0.5f + y, -0.5f + zp, colorR * AO_PPM, colorG * AO_PPM, colorB * AO_PPM,
-                                        -0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_PMP, colorG * AO_PMP, colorB * AO_PMP,
-                                        -0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_PMM, colorG * AO_PMM, colorB * AO_PMM));
-                            } else {
-                                data.addAll(List.of(
-                                        0.5f + xp, 0.5f + y, 0.5f + zp, colorR * AO_PPP, colorG * AO_PPP, colorB * AO_PPP,
-                                        0.5f + xp, 0.5f + y, -0.5f + zp, colorR * AO_PPM, colorG * AO_PPM, colorB * AO_PPM,
-                                        0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_PMM, colorG * AO_PMM, colorB * AO_PMM,
-                                        0.5f + xp, -0.5f + y, -0.5f + zp, colorR * AO_PMM, colorG * AO_PMM, colorB * AO_PMM,
-                                        0.5f + xp, -0.5f + y, 0.5f + zp, colorR * AO_PMP, colorG * AO_PMP, colorB * AO_PMP,
-                                        0.5f + xp, 0.5f + y, 0.5f + zp, colorR * AO_PPP, colorG * AO_PPP, colorB * AO_PPP));
-                            }
-                        }
-
-                        // TODO: Add proper support for AO_MMM, AO_MMP, AO_MPM, AO_MPP
-                        BlockState front = getBlockAt(x, y, z + 1, this,c0,c1,c2,c3,c4,c5,c6,c7);
-                        if (front.getTransparent() && front.getBlockType() != block.getBlockType()) {
-                            data.addAll(List.of(
-                                    -0.5f + xp, -0.5f + y, 0.5f + zp, colorR*AO_MMP, colorG*AO_MMP, colorB*AO_MMP,
-                                    0.5f + xp, 0.5f + y, 0.5f + zp, colorR*AO_PPP, colorG*AO_PPP, colorB*AO_PPP,
-                                    0.5f + xp, -0.5f + y, 0.5f + zp, colorR*AO_PMP, colorG*AO_PMP, colorB*AO_PMP,
-
-                                    0.5f + xp, 0.5f + y, 0.5f + zp, colorR*AO_PPP, colorG*AO_PPP, colorB*AO_PPP,
-                                    -0.5f + xp, -0.5f + y, 0.5f + zp, colorR*AO_MMP, colorG*AO_MMP, colorB*AO_MMP,
-                                    -0.5f + xp, 0.5f + y, 0.5f + zp, colorR*AO_MPP, colorG*AO_MPP, colorB*AO_MPP));
-                        }
-
-                        BlockState back = getBlockAt(x, y, z - 1, this,c0,c1,c2,c3,c4,c5,c6,c7);
-                        if (back.getTransparent() && back.getBlockType() != block.getBlockType()) {
-                            data.addAll(List.of(
-                                    -0.5f + xp, -0.5f + y, -0.5f + zp, colorR*AO_MMM, colorG*AO_MMM, colorB*AO_MMM,
-                                    0.5f + xp, -0.5f + y, -0.5f + zp, colorR*AO_PMM, colorG*AO_PMM, colorB*AO_PMM,
-                                    0.5f + xp, 0.5f + y, -0.5f + zp, colorR*AO_PPM, colorG*AO_PPM, colorB*AO_PPM,
-                                    0.5f + xp, 0.5f + y, -0.5f + zp, colorR*AO_PPM, colorG*AO_PPM, colorB*AO_PPM,
-                                    -0.5f + xp, 0.5f + y, -0.5f + zp, colorR*AO_MPM, colorG*AO_MPM, colorB*AO_MPM,
-                                    -0.5f + xp, -0.5f + y, -0.5f + zp, colorR*AO_MMM, colorG*AO_MMM, colorB*AO_MMM));
-                        }*/
                     }
                 }
             }
@@ -327,15 +239,12 @@ public class Chunk {
     }
     public void destroy() {
         if(VBO!=0) glDeleteBuffers(VBO);
-        neighbors = null;
     }
     public boolean isReady() {
         return ready;
     }
-    public void setNeighbors(Chunk[] neighbors) {
-        this.neighbors = neighbors;
-    }
-    public Chunk[] getNeighbors() {
-        return neighbors;
+
+    public boolean isTerrainGenerated(){
+        return isTerrainGenerated;
     }
 }

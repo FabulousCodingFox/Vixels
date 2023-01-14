@@ -67,14 +67,22 @@ public class Client {
         }
         chunkThread.interrupt();
     }
+
+    public Chunk getChunkAt(int x, int z){
+        for(Chunk chunk:chunks){
+            if(x == chunk.getX() && z == chunk.getZ()) return chunk;
+        }
+        return null;
+    }
+
     public void updateChunks(int seed) {
         // Get the players position
         int x = player.getLocation().getChunkPosition()[0];
         int z = player.getLocation().getChunkPosition()[1];
 
         // Remove all chunks outside the render distance
-        chunks.forEach(chunk -> {if(chunk.getX() > x + renderDistance + 1 || chunk.getX() < x - renderDistance - 1 || chunk.getY() > z + renderDistance + 1 || chunk.getY() < z - renderDistance - 1) chunksToDestroy.add(chunk);});
-        chunks.removeIf(chunk -> chunk.getX() > x + renderDistance + 1 || chunk.getX() < x - renderDistance - 1 || chunk.getY() > z + renderDistance + 1 || chunk.getY() < z - renderDistance - 1);
+        chunks.forEach(chunk -> {if(chunk.getX() > x + renderDistance + 1 || chunk.getX() < x - renderDistance - 1 || chunk.getZ() > z + renderDistance + 1 || chunk.getZ() < z - renderDistance - 1) chunksToDestroy.add(chunk);});
+        chunks.removeIf(chunk -> chunk.getX() > x + renderDistance + 1 || chunk.getX() < x - renderDistance - 1 || chunk.getZ() > z + renderDistance + 1 || chunk.getZ() < z - renderDistance - 1);
 
         // Adding chunks to the list that are within the render distance
         ArrayList<Chunk> newChunks = new ArrayList<>();
@@ -82,7 +90,7 @@ public class Client {
             for(int j = z - renderDistance; j <= z + renderDistance; j++) {
                 int finalI = i;
                 int finalJ = j;
-                if(chunks.stream().noneMatch(chunk -> chunk.getX() == finalI && chunk.getY() == finalJ)) {
+                if(chunks.stream().noneMatch(chunk -> chunk.getX() == finalI && chunk.getZ() == finalJ)) {
                     newChunks.add(new Chunk(i, j));
                 }
             }
@@ -95,20 +103,18 @@ public class Client {
             if(chunk.getMesh() != null) continue;
 
             int sides = 0;
-            Chunk[] neighbors = new Chunk[8];
             for(Chunk search : chunks) {
-                if(search.getX()==chunk.getX()-1 && search.getY()==chunk.getY()-1){ sides++;neighbors[0] = search; }
-                if(search.getX()==chunk.getX() && search.getY()==chunk.getY()-1){ sides++;neighbors[1] = search; }
-                if(search.getX()==chunk.getX()+1 && search.getY()==chunk.getY()-1){ sides++;neighbors[2] = search; }
+                if(search.getX()==chunk.getX()-1 && search.getZ()==chunk.getZ()-1){ sides++; }
+                if(search.getX()==chunk.getX() && search.getZ()==chunk.getZ()-1){ sides++; }
+                if(search.getX()==chunk.getX()+1 && search.getZ()==chunk.getZ()-1){ sides++; }
 
-                if(search.getX()==chunk.getX()-1 && search.getY()==chunk.getY()){ sides++;neighbors[3] = search; }
-                if(search.getX()==chunk.getX()+1 && search.getY()==chunk.getY()){ sides++;neighbors[4] = search; }
+                if(search.getX()==chunk.getX()-1 && search.getZ()==chunk.getZ()){ sides++; }
+                if(search.getX()==chunk.getX()+1 && search.getZ()==chunk.getZ()){ sides++; }
 
-                if(search.getX()==chunk.getX()-1 && search.getY()==chunk.getY()+1){ sides++;neighbors[5] = search; }
-                if(search.getX()==chunk.getX() && search.getY()==chunk.getY()+1){ sides++;neighbors[6] = search; }
-                if(search.getX()==chunk.getX()+1 && search.getY()==chunk.getY()+1){ sides++;neighbors[7] = search; }
+                if(search.getX()==chunk.getX()-1 && search.getZ()==chunk.getZ()+1){ sides++; }
+                if(search.getX()==chunk.getX() && search.getZ()==chunk.getZ()+1){ sides++; }
+                if(search.getX()==chunk.getX()+1 && search.getZ()==chunk.getZ()+1){ sides++; }
             }
-            chunk.setNeighbors(neighbors);
             if(sides == 8) {
                 chunksToGenerate.add(chunk);
             }
@@ -116,33 +122,32 @@ public class Client {
 
         //Sort chunks by distance
         chunksToGenerate.sort((a, b) -> {
-            double valueA = Math.sqrt(Math.pow(a.getX() - x, 2) + Math.pow(a.getY() - z, 2));
-            double valueB = Math.sqrt(Math.pow(b.getX() - x, 2) + Math.pow(b.getY() - z, 2));
+            double valueA = Math.sqrt(Math.pow(a.getX() - x, 2) + Math.pow(a.getZ() - z, 2));
+            double valueB = Math.sqrt(Math.pow(b.getX() - x, 2) + Math.pow(b.getZ() - z, 2));
             int value = Double.compare(valueA, valueB);
             return Integer.compare(value, 0);
         });
 
         //Generate Chunks
         for(Chunk chunk : chunksToGenerate) {
-            if(chunk.getBlock(0,0,0)==null) chunk.generateTerrain();
-            if(chunk.getNeighbors()[0].getBlock(0,0,0)==null){ chunk.getNeighbors()[0].generateTerrain();}
-            if(chunk.getNeighbors()[1].getBlock(0,0,0)==null){ chunk.getNeighbors()[1].generateTerrain();}
-            if(chunk.getNeighbors()[2].getBlock(0,0,0)==null){ chunk.getNeighbors()[2].generateTerrain();}
-            if(chunk.getNeighbors()[3].getBlock(0,0,0)==null){ chunk.getNeighbors()[3].generateTerrain();}
-            if(chunk.getNeighbors()[4].getBlock(0,0,0)==null){ chunk.getNeighbors()[4].generateTerrain();}
-            if(chunk.getNeighbors()[5].getBlock(0,0,0)==null){ chunk.getNeighbors()[5].generateTerrain();}
-            if(chunk.getNeighbors()[6].getBlock(0,0,0)==null){ chunk.getNeighbors()[6].generateTerrain();}
-            if(chunk.getNeighbors()[7].getBlock(0,0,0)==null){ chunk.getNeighbors()[7].generateTerrain();}
-            chunk.generateMesh(
-                    chunk.getNeighbors()[0],
-                    chunk.getNeighbors()[1],
-                    chunk.getNeighbors()[2],
-                    chunk.getNeighbors()[3],
-                    chunk.getNeighbors()[4],
-                    chunk.getNeighbors()[5],
-                    chunk.getNeighbors()[6],
-                    chunk.getNeighbors()[7]
-            );
+            if(!chunk.isTerrainGenerated()) chunk.generateTerrain();
+            Chunk c0 = getChunkAt(chunk.getX()  - 1, chunk.getZ() - 1);
+            Chunk c1 = getChunkAt(chunk.getX() + 0, chunk.getZ() - 1);
+            Chunk c2 = getChunkAt(chunk.getX() + 1, chunk.getZ() - 1);
+            Chunk c3 = getChunkAt(chunk.getX() - 1, chunk.getZ() + 0);
+            Chunk c4 = getChunkAt(chunk.getX() + 1, chunk.getZ() + 0);
+            Chunk c5 = getChunkAt(chunk.getX() - 1, chunk.getZ() + 1);
+            Chunk c6 = getChunkAt(chunk.getX() + 0, chunk.getZ() + 1);
+            Chunk c7 = getChunkAt(chunk.getX() + 1, chunk.getZ() + 1);
+            if(!c0.isTerrainGenerated()){ c0.generateTerrain(); }
+            if(!c1.isTerrainGenerated()){ c1.generateTerrain(); }
+            if(!c2.isTerrainGenerated()){ c2.generateTerrain(); }
+            if(!c3.isTerrainGenerated()){ c3.generateTerrain(); }
+            if(!c4.isTerrainGenerated()){ c4.generateTerrain(); }
+            if(!c5.isTerrainGenerated()){ c5.generateTerrain(); }
+            if(!c6.isTerrainGenerated()){ c6.generateTerrain(); }
+            if(!c7.isTerrainGenerated()){ c7.generateTerrain(); }
+            chunk.generateMesh(c0, c1, c2, c3, c4, c5, c6, c7);
             chunksToRender.add(chunk);
         }
     }

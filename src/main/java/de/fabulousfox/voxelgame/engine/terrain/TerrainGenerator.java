@@ -40,18 +40,18 @@ public class TerrainGenerator {
         //float value =((a.GetNoise(chunk.getX(), chunk.getY()) + 1) / 2) * biomes.size();
         //chunk.setBiome(biomes.get((int) value));
 
-        chunk.setBiome(getBiomeAtXY(chunk.getX(), chunk.getY()));
-        Biome front = getBiomeAtXY(chunk.getX(), chunk.getY() + 1);
-        Biome back = getBiomeAtXY(chunk.getX(), chunk.getY() - 1);
-        Biome left = getBiomeAtXY(chunk.getX() - 1, chunk.getY());
-        Biome right = getBiomeAtXY(chunk.getX() + 1, chunk.getY());
+        chunk.setBiome(getBiomeAtXY(chunk.getX(), chunk.getZ()));
+        Biome front = getBiomeAtXY(chunk.getX(), chunk.getZ() + 1);
+        Biome back = getBiomeAtXY(chunk.getX(), chunk.getZ() - 1);
+        Biome left = getBiomeAtXY(chunk.getX() - 1, chunk.getZ());
+        Biome right = getBiomeAtXY(chunk.getX() + 1, chunk.getZ());
 
         // Normal generation
         if (true) { // chunk.getBiome() == front && chunk.getBiome() == back && chunk.getBiome() == left && chunk.getBiome() == right
             for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
                 for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
                     for (int y = 0; y < Chunk.CHUNK_HEIGHT; y++) {
-                        chunk.setBlock(x, y, z, chunk.getBiome().getBlock(chunk.getBiome().getHeight(seed, x + chunk.getX() * Chunk.CHUNK_SIZE, z + chunk.getY() * Chunk.CHUNK_SIZE), y));
+                        chunk.setBlock(x, y, z, chunk.getBiome().getBlock(chunk.getBiome().getHeight(seed, x + chunk.getX() * Chunk.CHUNK_SIZE, z + chunk.getZ() * Chunk.CHUNK_SIZE), y));
                     }
                 }
             }
