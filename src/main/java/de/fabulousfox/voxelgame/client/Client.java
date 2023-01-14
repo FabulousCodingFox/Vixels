@@ -1,6 +1,7 @@
 package de.fabulousfox.voxelgame.client;
 
-import de.fabulousfox.voxelgame.engine.opengl.stable.OpenGlRenderer;
+import de.fabulousfox.voxelgame.engine.Key;
+import de.fabulousfox.voxelgame.engine.OpenGlRenderer;
 import de.fabulousfox.voxelgame.entity.Player;
 import de.fabulousfox.voxelgame.libs.Location;
 import de.fabulousfox.voxelgame.world.World;

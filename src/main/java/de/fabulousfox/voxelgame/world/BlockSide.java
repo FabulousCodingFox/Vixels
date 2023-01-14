@@ -1,4 +1,4 @@
-package de.fabulousfox.voxelgame.structures;
+package de.fabulousfox.voxelgame.world;
 
 public enum BlockSide {
     UP,

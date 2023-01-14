@@ -1,8 +1,8 @@
-package de.fabulousfox.voxelgame.structures.biomes;
+package de.fabulousfox.voxelgame.world.biomes;
 
 import de.fabulousfox.voxelgame.libs.FastNoiseLite;
 import de.fabulousfox.voxelgame.libs.SplineInterpolator;
-import de.fabulousfox.voxelgame.structures.BlockState;
+import de.fabulousfox.voxelgame.world.BlockState;
 
 import java.util.List;
 

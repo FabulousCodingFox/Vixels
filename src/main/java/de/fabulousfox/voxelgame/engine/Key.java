@@ -1,4 +1,4 @@
-package de.fabulousfox.voxelgame.client;
+package de.fabulousfox.voxelgame.engine;
 
 public enum Key {
     WALK_FORWARD,

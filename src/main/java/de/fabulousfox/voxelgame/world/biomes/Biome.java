@@ -1,6 +1,6 @@
-package de.fabulousfox.voxelgame.structures.biomes;
+package de.fabulousfox.voxelgame.world.biomes;
 
-import de.fabulousfox.voxelgame.structures.BlockState;
+import de.fabulousfox.voxelgame.world.BlockState;
 
 public interface Biome {
     int getHeight(int seed, int x, int z);

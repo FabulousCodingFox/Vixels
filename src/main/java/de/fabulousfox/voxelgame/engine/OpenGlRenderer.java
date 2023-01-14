@@ -1,8 +1,6 @@
-package de.fabulousfox.voxelgame.engine.opengl.stable;
+package de.fabulousfox.voxelgame.engine;
 
 import de.fabulousfox.voxelgame.client.Client;
-import de.fabulousfox.voxelgame.client.Key;
-import de.fabulousfox.voxelgame.engine.AssetLoader;
 import de.fabulousfox.voxelgame.libs.Log;
 import de.fabulousfox.voxelgame.world.Chunk;
 import org.joml.Matrix3f;

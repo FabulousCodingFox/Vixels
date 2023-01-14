@@ -1,4 +1,4 @@
-package de.fabulousfox.voxelgame.engine.opengl.stable;
+package de.fabulousfox.voxelgame.engine;
 
 import org.lwjgl.BufferUtils;
 
