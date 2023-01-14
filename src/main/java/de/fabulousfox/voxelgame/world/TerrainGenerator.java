@@ -1,7 +1,7 @@
 package de.fabulousfox.voxelgame.world;
 
 import de.fabulousfox.voxelgame.libs.FastNoiseLite;
-import de.fabulousfox.voxelgame.structures.biomes.Biome;
+import de.fabulousfox.voxelgame.world.biomes.Biome;
 
 import java.util.*;
 

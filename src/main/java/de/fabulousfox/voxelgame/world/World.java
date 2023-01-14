@@ -1,8 +1,8 @@
 package de.fabulousfox.voxelgame.world;
 
-import de.fabulousfox.voxelgame.structures.biomes.Biome;
-import de.fabulousfox.voxelgame.structures.biomes.OceanBiome;
-import de.fabulousfox.voxelgame.structures.biomes.SwampBiome;
+import de.fabulousfox.voxelgame.world.biomes.Biome;
+import de.fabulousfox.voxelgame.world.biomes.OceanBiome;
+import de.fabulousfox.voxelgame.world.biomes.SwampBiome;
 
 import java.util.ArrayList;
 import java.util.Random;
