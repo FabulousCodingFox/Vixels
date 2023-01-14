@@ -43,6 +43,8 @@ public class OpenGlRenderer {
     private float deltaTime;
     private float lastFrame;
 
+    private Texture TEXTURE_ATLAS;
+
     public OpenGlRenderer(
             Client client,
             String windowTitle,
@@ -133,6 +135,9 @@ public class OpenGlRenderer {
         //////////////////////////////////////////////////////////////////////////////////////
         Log.info("Initializing skybox...");
         SKYBOX = new Skybox();
+        //////////////////////////////////////////////////////////////////////////////////////
+        Log.info("Initializing textures...");
+        TEXTURE_ATLAS = new Texture("assets/textures/atlas.png", GL_TEXTURE1);
     }
 
     private void processInput() {
@@ -161,14 +166,17 @@ public class OpenGlRenderer {
         SHADER_DEFAULT_BLOCK.setMatrix4f("model", modelMatrix);
         SHADER_DEFAULT_BLOCK.setMatrix4f("view", viewMatrix);
         SHADER_DEFAULT_BLOCK.setMatrix4f("projection", projectionMatrix);
+        SHADER_DEFAULT_BLOCK.setInt("atlas", 1);
         glBindVertexArray(CHUNK_VAO);
         for(Chunk chunk : chunks) {
             glBindBuffer(GL_ARRAY_BUFFER, chunk.getVBO());
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 24, 0);
             glEnableVertexAttribArray(0); // Position
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, 24, 12);
-            glEnableVertexAttribArray(1); // Color
-            glDrawArrays(GL_TRIANGLES, 0, chunk.getMesh().length/3);
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 24, 12);
+            glEnableVertexAttribArray(1); // Tex
+            glVertexAttribPointer(2, 1, GL_FLOAT, false, 24, 20);
+            glEnableVertexAttribArray(2); // AO
+            glDrawArrays(GL_TRIANGLES, 0, chunk.getMesh().length/6);
         }
 
         // Draw the Skybox
@@ -186,10 +194,6 @@ public class OpenGlRenderer {
         glEnableVertexAttribArray(1); // Color
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glCullFace(GL_BACK);
-
-
-
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();

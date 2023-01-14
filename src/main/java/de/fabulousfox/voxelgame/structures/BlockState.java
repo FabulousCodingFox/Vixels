@@ -1,7 +1,5 @@
 package de.fabulousfox.voxelgame.structures;
 
-import java.util.Random;
-
 enum BlockType {
     AIR,
     STONE,
@@ -33,15 +31,23 @@ public class BlockState {
         };
     }
 
-    public static float[] getBlockColor(BlockType blockType) {
-        return switch (blockType) {
-            case STONE, COBBLESTONE -> new float[]{0.53f, 0.54f, 0.55f};
-            case GRASS -> new float[]{0.33f, 0.49f, 0.27f};
-            case DIRT -> new float[]{0.6f, 0.46f, 0.32f};
-            case SAND -> new float[]{0.77f, 0.65f, 0.39f};
-            case WATER -> new float[]{0.45f, 0.71f, 0.98f};
-            default -> new float[]{0, 0, 0};
-        };
+    public int[] getTexPositions(BlockSide side){
+        int[] pos = new int[]{0, 0};
+
+        if(block == BlockType.GRASS){
+            if(side == BlockSide.UP) pos = new int[]{0, 0};
+            else pos = new int[]{0, 1};
+        }
+
+        if(block == BlockType.SAND){
+            pos = new int[]{1, 0};
+        }
+
+        if(block == BlockType.WATER){
+            pos = new int[]{1, 1};
+        }
+
+        return pos;
     }
 
     private final BlockType block;
