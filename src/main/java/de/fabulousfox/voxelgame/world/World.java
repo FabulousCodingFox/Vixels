@@ -2,6 +2,7 @@ package de.fabulousfox.voxelgame.world;
 
 import de.fabulousfox.voxelgame.world.biomes.Biome;
 import de.fabulousfox.voxelgame.world.biomes.OceanBiome;
+import de.fabulousfox.voxelgame.world.biomes.PlainsBiome;
 import de.fabulousfox.voxelgame.world.biomes.SwampBiome;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class World {
         ArrayList<Biome> biomes = new ArrayList<>();
         biomes.add(new SwampBiome());
         biomes.add(new OceanBiome());
+        biomes.add(new PlainsBiome());
         TerrainGenerator.init(biomes);
     }
 
