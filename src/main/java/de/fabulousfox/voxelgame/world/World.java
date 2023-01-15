@@ -40,9 +40,7 @@ public class World {
     public ArrayList<Chunk> getRenderableAndUpdateChunks(){
         ArrayList<Chunk> chunkToRender = new ArrayList<>(chunksToRender);
         for(Chunk chunk : chunkToRender) {
-            for(SubChunk subChunk: chunk.getSubChunks()){
-                subChunk.generateVBOs();
-            }
+            chunk.generateBuffers();
         }
         chunksToRender.removeIf(chunkToRender::contains);
         ArrayList<Chunk> chunkToDestroy = new ArrayList<>(chunksToDestroy);

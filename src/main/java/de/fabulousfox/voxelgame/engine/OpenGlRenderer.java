@@ -26,7 +26,7 @@ public class OpenGlRenderer {
     private long window;
     private int windowWidth, windowHeight;
 
-    private int CHUNK_VAO, SKYBOX_VAO, WATER_VAO;
+    private int SKYBOX_VAO;
 
     private Shader SHADER_DEFAULT_BLOCK;
     private Shader SHADER_SKYBOX;
@@ -117,8 +117,6 @@ public class OpenGlRenderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        CHUNK_VAO = glGenVertexArrays();
-        WATER_VAO = glGenVertexArrays();
         SKYBOX_VAO = glGenVertexArrays();
         //////////////////////////////////////////////////////////////////////////////////////
         Log.info("Initializing Shaders...");
@@ -183,19 +181,9 @@ public class OpenGlRenderer {
         SHADER_DEFAULT_BLOCK.setMatrix4f("view", viewMatrix);
         SHADER_DEFAULT_BLOCK.setMatrix4f("projection", projectionMatrix);
         SHADER_DEFAULT_BLOCK.setInt("atlas", 1);
-        glBindVertexArray(CHUNK_VAO);
         for(Chunk chunk : chunks) {
-            for(SubChunk subChunk: chunk.getSubChunks()){
-                if(subChunk.isAir() || subChunk.getVBO_blocks() == -1) continue;
-                glBindBuffer(GL_ARRAY_BUFFER, subChunk.getVBO_blocks());
-                glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
-                glEnableVertexAttribArray(0); // Position
-                glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
-                glEnableVertexAttribArray(1); // Tex
-                //glVertexAttribPointer(2, 1, GL_FLOAT, false, 24, 20);
-                //glEnableVertexAttribArray(2); // AO
-                glDrawArrays(GL_TRIANGLES, 0, subChunk.getMesh_blocks().length/5);
-            }
+            glBindVertexArray(chunk.getVAO_blocks());
+            glDrawArrays(GL_TRIANGLES, 0, chunk.getMeshSize_blocks());
         }
 
         // Draw the Water
@@ -211,24 +199,16 @@ public class OpenGlRenderer {
         SHADER_DEFAULT_WATER.setMatrix4f("projection", projectionMatrix);
         SHADER_DEFAULT_WATER.setInt("atlas", 1);
         SHADER_DEFAULT_WATER.setFloat("Time", (float) glfwGetTime());
-        glBindVertexArray(WATER_VAO);
         for(Chunk chunk : chunks) {
-            for(SubChunk subChunk: chunk.getSubChunks()){
-                if(subChunk.isAir() || subChunk.getVBO_water() == -1) continue;
-                glBindBuffer(GL_ARRAY_BUFFER, subChunk.getVBO_water());
-                glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
-                glEnableVertexAttribArray(0); // Position
-                glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
-                glEnableVertexAttribArray(1); // Tex
-                glDrawArrays(GL_TRIANGLES, 0, subChunk.getMesh_water().length/5);
-            }
+            glBindVertexArray(chunk.getVAO_water());
+            glDrawArrays(GL_TRIANGLES, 0, chunk.getMeshSize_water());
         }
 
         // Draw the Skybox
         SHADER_SKYBOX.use();
         SHADER_SKYBOX.setMatrix4f("view", new Matrix4f(new Matrix3f(viewMatrix)));
         SHADER_SKYBOX.setMatrix4f("projection", projectionMatrix);
-        glBindVertexArray(SKYBOX_VAO);
+        //glBindVertexArray(SKYBOX_VAO);
 
         glCullFace(GL_FRONT);
         glBindBuffer(GL_ARRAY_BUFFER, SKYBOX.getVBO());

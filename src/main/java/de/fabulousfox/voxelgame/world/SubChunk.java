@@ -1,7 +1,6 @@
 package de.fabulousfox.voxelgame.world;
 
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL46.*;
 
 public class SubChunk {
     private int VBO_blocks, VBO_water;
@@ -54,18 +53,26 @@ public class SubChunk {
         return VBO_water;
     }
 
-    public void generateVBOs(){
+    public void generateAllVBOs(int VAO_blocks, int VAO_water){
         if(isAir) return;
 
         VBO_blocks = glGenBuffers();
+        glBindVertexArray(VAO_blocks);
         glBindBuffer(GL_ARRAY_BUFFER, VBO_blocks);
         glBufferData(GL_ARRAY_BUFFER, mesh_blocks, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
+        glEnableVertexAttribArray(0); // Position
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
+        glEnableVertexAttribArray(1); // Tex
 
         VBO_water = glGenBuffers();
+        glBindVertexArray(VAO_water);
         glBindBuffer(GL_ARRAY_BUFFER, VBO_water);
         glBufferData(GL_ARRAY_BUFFER, mesh_water, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
+        glEnableVertexAttribArray(0); // Position
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
+        glEnableVertexAttribArray(1); // Tex
 
         isVBOGenerated = true;
     }

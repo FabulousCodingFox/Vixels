@@ -25,6 +25,8 @@ public class Chunk {
 
     private Biome biome;
 
+    private int VAO_blocks, VAO_water;
+
     public Chunk(int x, int z) {
         this.blocks = new BlockState[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
         this.x = x;
@@ -34,6 +36,8 @@ public class Chunk {
         for(int i=0; i<SUBCHUNK_AMOUNT; i++){
             subChunks[i] = new SubChunk();
         }
+        this.VAO_blocks = -1;
+        this.VAO_water = -1;
     }
 
     public Biome getBiome() {
@@ -252,5 +256,38 @@ public class Chunk {
         for(SubChunk subChunk: getSubChunks()){
             subChunk.destroy();
         }
+    }
+
+    public void generateBuffers(){
+        VAO_blocks = glGenVertexArrays();
+        VAO_water = glGenVertexArrays();
+
+        for(SubChunk subChunk: getSubChunks()){
+            subChunk.generateAllVBOs(VAO_blocks, VAO_water);
+        }
+    }
+
+    public int getVAO_blocks(){
+        return VAO_blocks;
+    }
+
+    public int getVAO_water() {
+        return VAO_water;
+    }
+
+    public int getMeshSize_blocks(){
+        int i = 0;
+        for(SubChunk subChunk: getSubChunks()){
+            i += subChunk.getMesh_blocks() == null ? 0 : subChunk.getMesh_blocks().length;
+        }
+        return i / 5;
+    }
+
+    public int getMeshSize_water(){
+        int i = 0;
+        for(SubChunk subChunk: getSubChunks()){
+            i += subChunk.getMesh_water() == null ? 0 : subChunk.getMesh_water().length;
+        }
+        return i / 5;
     }
 }
