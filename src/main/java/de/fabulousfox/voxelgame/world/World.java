@@ -7,7 +7,6 @@ import de.fabulousfox.voxelgame.world.biomes.SwampBiome;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class World {
     private final ArrayList<Chunk> chunks;

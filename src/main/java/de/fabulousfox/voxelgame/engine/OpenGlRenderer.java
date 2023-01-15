@@ -3,14 +3,13 @@ package de.fabulousfox.voxelgame.engine;
 import de.fabulousfox.voxelgame.client.Client;
 import de.fabulousfox.voxelgame.libs.Log;
 import de.fabulousfox.voxelgame.world.Chunk;
-import de.fabulousfox.voxelgame.world.SubChunk;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
@@ -67,6 +66,7 @@ public class OpenGlRenderer {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
         window = glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         //////////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +107,7 @@ public class OpenGlRenderer {
         glfwShowWindow(window);
 
         GL.createCapabilities();
+        GLUtil.setupDebugMessageCallback();
         glClearColor(0.0f,0.0f,0.0f, 0.0f);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);

@@ -256,6 +256,8 @@ public class Chunk {
         for(SubChunk subChunk: getSubChunks()){
             subChunk.destroy();
         }
+        glDeleteVertexArrays(VAO_water);
+        glDeleteVertexArrays(VAO_blocks);
     }
 
     public void generateBuffers(){

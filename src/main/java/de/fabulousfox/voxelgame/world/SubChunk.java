@@ -4,25 +4,15 @@ import static org.lwjgl.opengl.GL46.*;
 
 public class SubChunk {
     private int VBO_blocks, VBO_water;
-    private boolean isVBOGenerated;
     private float[] mesh_blocks, mesh_water;
     private boolean isAir;
 
     public SubChunk(){
         this.VBO_blocks = -1;
         this.VBO_water = -1;
-        this.isVBOGenerated = false;
         this.mesh_blocks = null;
         this.mesh_water = null;
         this.isAir = false;
-    }
-
-    public boolean isAir() {
-        return isAir;
-    }
-
-    public void setAir(boolean air) {
-        isAir = air;
     }
 
     public float[] getMesh_blocks() {
@@ -39,18 +29,6 @@ public class SubChunk {
 
     public void setMesh_water(float[] mesh_water) {
         this.mesh_water = mesh_water;
-    }
-
-    public boolean isVBOGenerated() {
-        return isVBOGenerated;
-    }
-
-    public int getVBO_blocks() {
-        return VBO_blocks;
-    }
-
-    public int getVBO_water() {
-        return VBO_water;
     }
 
     public void generateAllVBOs(int VAO_blocks, int VAO_water){
@@ -74,7 +52,6 @@ public class SubChunk {
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
         glEnableVertexAttribArray(1); // Tex
 
-        isVBOGenerated = true;
     }
 
     public void destroy(){
