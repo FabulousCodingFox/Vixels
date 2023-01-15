@@ -24,9 +24,11 @@ public class TerrainGenerator {
     }
 
     public static Biome getBiomeAtXY(int x, int y) {
-        return biomes.get(
-                Math.round(((a.GetNoise(x, y) + 1) / 2) * (biomes.size()-1))
-        );
+        return biomes.get(new Random().nextInt(biomes.size()));
+
+        //return biomes.get(
+        //        Math.round(((a.GetNoise(x, y) + 1) / 2) * (biomes.size()-1))
+        //);
     }
 
     public static void generateChunk(Chunk chunk, int seed) {

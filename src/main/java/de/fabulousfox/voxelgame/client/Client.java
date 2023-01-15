@@ -38,7 +38,7 @@ public class Client {
 
         boolean running = true;
         while(running) {
-            running = engine.render(world.getRenderableAndUpdateChunks());
+            running = engine.render(world.getRenderableAndUpdateChunks(), player.getLocation().getChunkPosition()[0], player.getLocation().getChunkPosition()[1]);
         }
     }
 

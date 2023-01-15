@@ -131,7 +131,7 @@ public class OpenGlRenderer {
         );
         SHADER_DEFAULT_WATER = new Shader(
                 AssetLoader.getCoreShaderPath("water.vert"),
-                AssetLoader.getCoreShaderPath("block.frag")
+                AssetLoader.getCoreShaderPath("water.frag")
         );
         //////////////////////////////////////////////////////////////////////////////////////
         Log.info("Initializing camera...");
@@ -145,6 +145,8 @@ public class OpenGlRenderer {
         //////////////////////////////////////////////////////////////////////////////////////
         Log.info("Initializing textures...");
         TEXTURE_ATLAS = new Texture("assets/textures/atlas.png", GL_TEXTURE1, true);
+
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     }
 
     private void processInput() {
@@ -158,7 +160,7 @@ public class OpenGlRenderer {
         viewMatrix = camera.getViewMatrix();
     }
 
-    public boolean render(ArrayList<Chunk> chunks) {
+    public boolean render(ArrayList<Chunk> chunks, int chunkX, int chunkY) {
         if(glfwWindowShouldClose(window)) return false;
 
         float currentFrame = (float) glfwGetTime();
@@ -169,6 +171,12 @@ public class OpenGlRenderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Draw the Chunks
+        chunks.sort((a, b) -> {
+            double valueA = Math.sqrt(Math.pow(a.getX() - chunkX, 2) + Math.pow(a.getZ() - chunkY, 2));
+            double valueB = Math.sqrt(Math.pow(b.getX() - chunkX, 2) + Math.pow(b.getZ() - chunkY, 2));
+            int value = Double.compare(valueA, valueB);
+            return Integer.compare(value, 0);
+        });
         SHADER_DEFAULT_BLOCK.use();
         SHADER_DEFAULT_BLOCK.setMatrix4f("model", modelMatrix);
         SHADER_DEFAULT_BLOCK.setMatrix4f("view", viewMatrix);
@@ -187,6 +195,12 @@ public class OpenGlRenderer {
         }
 
         // Draw the Water
+        chunks.sort((a, b) -> {
+            double valueA = Math.sqrt(Math.pow(a.getX() - chunkX, 2) + Math.pow(a.getZ() - chunkY, 2));
+            double valueB = Math.sqrt(Math.pow(b.getX() - chunkX, 2) + Math.pow(b.getZ() - chunkY, 2));
+            int value = Double.compare(valueA, valueB);
+            return Integer.compare(0, value);
+        });
         SHADER_DEFAULT_WATER.use();
         SHADER_DEFAULT_WATER.setMatrix4f("model", modelMatrix);
         SHADER_DEFAULT_WATER.setMatrix4f("view", viewMatrix);

@@ -31,7 +31,7 @@ public class Shader {
         int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, fragmentCode);
         glCompileShader(fragmentShader);
-        if(glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE) throw new RuntimeException("Fragment shader failed to compile: "+fragmentPath);
+        if(glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE) throw new RuntimeException("Fragment shader failed to compile: "+fragmentPath + " Reason: " +  glGetShaderInfoLog(fragmentShader));
 
         // 3. create shader program
         ID = glCreateProgram();
