@@ -40,6 +40,8 @@ public class Client {
         while(running) {
             running = engine.render(world.getRenderableAndUpdateChunks(), player.getLocation().getChunkPosition()[0], player.getLocation().getChunkPosition()[1]);
         }
+
+        world.stopChunkThread();
     }
 
     public void onKeyPress(Key key, float deltaTime) {

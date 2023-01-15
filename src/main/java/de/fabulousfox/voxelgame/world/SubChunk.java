@@ -34,8 +34,8 @@ public class SubChunk {
     public void generateAllVBOs(int VAO_blocks, int VAO_water){
         if(isAir) return;
 
-        VBO_blocks = glGenBuffers();
         glBindVertexArray(VAO_blocks);
+        this.VBO_blocks = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, VBO_blocks);
         glBufferData(GL_ARRAY_BUFFER, mesh_blocks, GL_DYNAMIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
@@ -43,8 +43,8 @@ public class SubChunk {
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
         glEnableVertexAttribArray(1); // Tex
 
-        VBO_water = glGenBuffers();
         glBindVertexArray(VAO_water);
+        this.VBO_water = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, VBO_water);
         glBufferData(GL_ARRAY_BUFFER, mesh_water, GL_DYNAMIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);

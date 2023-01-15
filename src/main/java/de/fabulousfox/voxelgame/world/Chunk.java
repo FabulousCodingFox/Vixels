@@ -256,25 +256,24 @@ public class Chunk {
         for(SubChunk subChunk: getSubChunks()){
             subChunk.destroy();
         }
-        glDeleteVertexArrays(VAO_water);
-        glDeleteVertexArrays(VAO_blocks);
+        if(VAO_water != -1) glDeleteVertexArrays(this.VAO_water);
+        if(VAO_blocks != -1) glDeleteVertexArrays(this.VAO_blocks);
     }
 
     public void generateBuffers(){
         VAO_blocks = glGenVertexArrays();
         VAO_water = glGenVertexArrays();
-
         for(SubChunk subChunk: getSubChunks()){
-            subChunk.generateAllVBOs(VAO_blocks, VAO_water);
+            subChunk.generateAllVBOs(this.VAO_blocks, this.VAO_water);
         }
     }
 
     public int getVAO_blocks(){
-        return VAO_blocks;
+        return this.VAO_blocks;
     }
 
     public int getVAO_water() {
-        return VAO_water;
+        return this.VAO_water;
     }
 
     public int getMeshSize_blocks(){

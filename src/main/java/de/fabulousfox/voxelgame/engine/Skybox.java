@@ -54,11 +54,15 @@ public class Skybox {
 
 
 
-    public Skybox() {
+    public Skybox(int vao) {
+        glBindVertexArray(vao);
         VBO = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, VERTICES, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBufferData(GL_ARRAY_BUFFER, VERTICES, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 24, 0);
+        glEnableVertexAttribArray(0); // Position
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, 24, 12);
+        glEnableVertexAttribArray(1); // Color
     }
 
     public int getVBO(){

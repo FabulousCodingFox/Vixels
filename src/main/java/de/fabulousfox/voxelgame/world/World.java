@@ -30,8 +30,12 @@ public class World {
         TerrainGenerator.init(biomes);
     }
 
-    public void restartChunkThread(int x, int z, int renderDistance){
+    public void stopChunkThread(){
         if(chunkThread != null && chunkThread.isAlive()) chunkThread.interrupt();
+    }
+
+    public void restartChunkThread(int x, int z, int renderDistance){
+        stopChunkThread();
         chunkThread = new Thread(() -> updateChunks(x, z, renderDistance));
         chunkThread.start();
     }

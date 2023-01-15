@@ -20,7 +20,6 @@ import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-
 public class OpenGlRenderer {
     private long window;
     private int windowWidth, windowHeight;
@@ -44,6 +43,8 @@ public class OpenGlRenderer {
 
     private Texture TEXTURE_ATLAS;
 
+    public static final boolean DEBUG = false;
+
     public OpenGlRenderer(
             Client client,
             String windowTitle,
@@ -66,7 +67,7 @@ public class OpenGlRenderer {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+        if(DEBUG) glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
         window = glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         //////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +108,8 @@ public class OpenGlRenderer {
         glfwShowWindow(window);
 
         GL.createCapabilities();
-        GLUtil.setupDebugMessageCallback();
+        if(DEBUG) GLUtil.setupDebugMessageCallback();
+        if(DEBUG) glEnable(GL_DEBUG_OUTPUT);
         glClearColor(0.0f,0.0f,0.0f, 0.0f);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
@@ -118,7 +120,6 @@ public class OpenGlRenderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        SKYBOX_VAO = glGenVertexArrays();
         //////////////////////////////////////////////////////////////////////////////////////
         Log.info("Initializing Shaders...");
         SHADER_DEFAULT_BLOCK = new Shader(
@@ -141,7 +142,8 @@ public class OpenGlRenderer {
         viewMatrix = camera.getViewMatrix();
         //////////////////////////////////////////////////////////////////////////////////////
         Log.info("Initializing skybox...");
-        SKYBOX = new Skybox();
+        SKYBOX_VAO = glGenVertexArrays();
+        SKYBOX = new Skybox(SKYBOX_VAO);
         //////////////////////////////////////////////////////////////////////////////////////
         Log.info("Initializing textures...");
         TEXTURE_ATLAS = new Texture("assets/textures/atlas.png", GL_TEXTURE1, true);
@@ -183,6 +185,7 @@ public class OpenGlRenderer {
         SHADER_DEFAULT_BLOCK.setMatrix4f("projection", projectionMatrix);
         SHADER_DEFAULT_BLOCK.setInt("atlas", 1);
         for(Chunk chunk : chunks) {
+            if(chunk.getVAO_blocks() == -1) continue;
             glBindVertexArray(chunk.getVAO_blocks());
             glDrawArrays(GL_TRIANGLES, 0, chunk.getMeshSize_blocks());
         }
@@ -201,6 +204,7 @@ public class OpenGlRenderer {
         SHADER_DEFAULT_WATER.setInt("atlas", 1);
         SHADER_DEFAULT_WATER.setFloat("Time", (float) glfwGetTime());
         for(Chunk chunk : chunks) {
+            if(chunk.getVAO_water() == -1) continue;
             glBindVertexArray(chunk.getVAO_water());
             glDrawArrays(GL_TRIANGLES, 0, chunk.getMeshSize_water());
         }
@@ -209,14 +213,9 @@ public class OpenGlRenderer {
         SHADER_SKYBOX.use();
         SHADER_SKYBOX.setMatrix4f("view", new Matrix4f(new Matrix3f(viewMatrix)));
         SHADER_SKYBOX.setMatrix4f("projection", projectionMatrix);
-        //glBindVertexArray(SKYBOX_VAO);
 
+        glBindVertexArray(SKYBOX_VAO);
         glCullFace(GL_FRONT);
-        glBindBuffer(GL_ARRAY_BUFFER, SKYBOX.getVBO());
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 24, 0);
-        glEnableVertexAttribArray(0); // Position
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, 24, 12);
-        glEnableVertexAttribArray(1); // Color
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glCullFace(GL_BACK);
 
