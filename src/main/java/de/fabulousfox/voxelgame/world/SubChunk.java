@@ -69,4 +69,9 @@ public class SubChunk {
 
         isVBOGenerated = true;
     }
+
+    public void destroy(){
+        if(VBO_blocks != -1) glDeleteBuffers(VBO_blocks);
+        if(VBO_water != -1) glDeleteBuffers(VBO_water);
+    }
 }

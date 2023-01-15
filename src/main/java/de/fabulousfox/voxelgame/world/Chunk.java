@@ -31,6 +31,9 @@ public class Chunk {
         this.z = z;
         this.isTerrainGenerated = false;
         this.subChunks = new SubChunk[SUBCHUNK_AMOUNT];
+        for(int i=0; i<SUBCHUNK_AMOUNT; i++){
+            subChunks[i] = new SubChunk();
+        }
     }
 
     public Biome getBiome() {
@@ -239,5 +242,15 @@ public class Chunk {
 
     public boolean isTerrainGenerated(){
         return isTerrainGenerated;
+    }
+
+    public SubChunk[] getSubChunks() {
+        return subChunks;
+    }
+
+    public void destroy(){
+        for(SubChunk subChunk: getSubChunks()){
+            subChunk.destroy();
+        }
     }
 }

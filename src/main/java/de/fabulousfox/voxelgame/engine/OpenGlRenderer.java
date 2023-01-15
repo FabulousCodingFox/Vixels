@@ -3,6 +3,7 @@ package de.fabulousfox.voxelgame.engine;
 import de.fabulousfox.voxelgame.client.Client;
 import de.fabulousfox.voxelgame.libs.Log;
 import de.fabulousfox.voxelgame.world.Chunk;
+import de.fabulousfox.voxelgame.world.SubChunk;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -184,14 +185,17 @@ public class OpenGlRenderer {
         SHADER_DEFAULT_BLOCK.setInt("atlas", 1);
         glBindVertexArray(CHUNK_VAO);
         for(Chunk chunk : chunks) {
-            glBindBuffer(GL_ARRAY_BUFFER, chunk.getVBO_blocks());
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
-            glEnableVertexAttribArray(0); // Position
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
-            glEnableVertexAttribArray(1); // Tex
-            //glVertexAttribPointer(2, 1, GL_FLOAT, false, 24, 20);
-            //glEnableVertexAttribArray(2); // AO
-            glDrawArrays(GL_TRIANGLES, 0, chunk.getMesh_blocks().length/5);
+            for(SubChunk subChunk: chunk.getSubChunks()){
+                if(subChunk.isAir() || subChunk.getVBO_blocks() == -1) continue;
+                glBindBuffer(GL_ARRAY_BUFFER, subChunk.getVBO_blocks());
+                glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
+                glEnableVertexAttribArray(0); // Position
+                glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
+                glEnableVertexAttribArray(1); // Tex
+                //glVertexAttribPointer(2, 1, GL_FLOAT, false, 24, 20);
+                //glEnableVertexAttribArray(2); // AO
+                glDrawArrays(GL_TRIANGLES, 0, subChunk.getMesh_blocks().length/5);
+            }
         }
 
         // Draw the Water
@@ -209,12 +213,15 @@ public class OpenGlRenderer {
         SHADER_DEFAULT_WATER.setFloat("Time", (float) glfwGetTime());
         glBindVertexArray(WATER_VAO);
         for(Chunk chunk : chunks) {
-            glBindBuffer(GL_ARRAY_BUFFER, chunk.getVBO_water());
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
-            glEnableVertexAttribArray(0); // Position
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
-            glEnableVertexAttribArray(1); // Tex
-            glDrawArrays(GL_TRIANGLES, 0, chunk.getMesh_water().length/5);
+            for(SubChunk subChunk: chunk.getSubChunks()){
+                if(subChunk.isAir() || subChunk.getVBO_water() == -1) continue;
+                glBindBuffer(GL_ARRAY_BUFFER, subChunk.getVBO_water());
+                glVertexAttribPointer(0, 3, GL_FLOAT, false, 20, 0);
+                glEnableVertexAttribArray(0); // Position
+                glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, 12);
+                glEnableVertexAttribArray(1); // Tex
+                glDrawArrays(GL_TRIANGLES, 0, subChunk.getMesh_water().length/5);
+            }
         }
 
         // Draw the Skybox
