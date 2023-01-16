@@ -148,7 +148,7 @@ public class OpenGlRenderer {
         Log.info("Initializing textures...");
         TEXTURE_ATLAS = new Texture("assets/textures/atlas.png", GL_TEXTURE1, true);
 
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     }
 
     private void processInput() {
